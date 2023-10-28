@@ -93,9 +93,7 @@ export class Importer {
           project_id: 3,
         });
 
-        columns.data.forEach((column) => {
-          Core.info(`${Importer.LOG_BULLET_ITEM} ${column}`);
-        });
+        Core.info(`Columns: ${JSON.stringify(columns)}`);
         issueSheetsData.push([
           value.number,
           value.state,
