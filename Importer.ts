@@ -88,6 +88,7 @@ export class Importer {
         for (const assignee of value.assignees) {
           assignees.push(assignee.login);
         }
+        Core.info(`Value ${value}...`);
         issueSheetsData.push([
           value.number,
           value.state,
@@ -131,6 +132,7 @@ export class Importer {
               "Assignees",
               "Milestone",
               "Status",
+              "Story Points",
               "Deadline",
               "URI",
             ],
