@@ -8,7 +8,7 @@ const googleapis_1 = require("googleapis");
 const auth_action_1 = require("@octokit/auth-action");
 class Importer {
     async start() {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e, _f, _g;
         try {
             Core.startGroup("🚦 Checking Inputs and Initializing...");
             const serviceAccountCredentials = Core.getInput(Importer.INPUT_SERVICE_ACCOUNT_JSON);
@@ -97,7 +97,8 @@ class Importer {
         `, {
                     id: value.node_id,
                 });
-                const storyPoints = (_a = response.node.projectItems.nodes[0]) === null || _a === void 0 ? void 0 : _a.fieldValueByName.number;
+                const storyPoints = ((_d = (_c = (_b = (_a = response.node.projectItems) === null || _a === void 0 ? void 0 : _a.nodes) === null || _b === void 0 ? void 0 : _b[0]) === null || _c === void 0 ? void 0 : _c.fieldValueByName) === null || _d === void 0 ? void 0 : _d.number) ||
+                    "N/A";
                 // ignore if a pull request
                 if (value.pull_request) {
                     Core.info(`Ignoring ${JSON.stringify(value.title)} as it is a pull request...`);
@@ -115,10 +116,10 @@ class Importer {
                     Object.keys(assignees)
                         .map((k) => assignees[k])
                         .join(", "),
-                    (_b = value.milestone) === null || _b === void 0 ? void 0 : _b.title,
-                    (_c = value.milestone) === null || _c === void 0 ? void 0 : _c.state,
+                    (_e = value.milestone) === null || _e === void 0 ? void 0 : _e.title,
+                    (_f = value.milestone) === null || _f === void 0 ? void 0 : _f.state,
                     storyPoints,
-                    (_d = value.milestone) === null || _d === void 0 ? void 0 : _d.due_on,
+                    (_g = value.milestone) === null || _g === void 0 ? void 0 : _g.due_on,
                 ]);
             }
             issueSheetsData.forEach((value) => {

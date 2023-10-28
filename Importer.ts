@@ -114,7 +114,8 @@ export class Importer {
         );
 
         const storyPoints =
-          response.node.projectItems.nodes[0]?.fieldValueByName.number;
+          response.node.projectItems?.nodes?.[0]?.fieldValueByName?.number ||
+          "N/A";
 
         // ignore if a pull request
         if (value.pull_request) {
