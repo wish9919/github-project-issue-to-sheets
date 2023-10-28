@@ -80,7 +80,7 @@ export class Importer {
       Core.startGroup(`🔨 Form Issues data for Sheets format...`);
       var issueSheetsData = [];
       for (const value of issuesData) {
-        Core.info(`Processing ${JSON.stringify(value)}...`);
+        Core.info(`Processing ${JSON.stringify(value.title)}...`);
         var labels = [];
         for (const label of value.labels) {
           labels.push(label.name);
@@ -97,7 +97,7 @@ export class Importer {
                 id
                 projectItems(first: 10){
                   nodes{
-                    fieldValueByName(name:"Story Point"){
+                    fieldValueByName(name:"Story Points"){
                       ...on ProjectV2ItemFieldNumberValue{
                         number
                       }
@@ -113,15 +113,21 @@ export class Importer {
           }
         );
 
-        Core.info(`Response: ${JSON.stringify(response)}`);
+        const storyPoints =
+          response.node.projectItems.nodes[0]?.fieldValueByName.number;
 
-        // const storyPoints =
-        //   response.node.projectItems.nodes[0]?.fieldValueByName.number;
+        // ignore if a pull request
+        if (value.pull_request) {
+          Core.info(
+            `Ignoring ${JSON.stringify(value.title)} as it is a pull request...`
+          );
+          continue;
+        }
 
         issueSheetsData.push([
           value.number,
           value.state,
-          value.pull_request ? "Pull Request" : "Issue",
+          "Issue",
           value.title,
           value.html_url,
           Object.keys(labels)
@@ -132,8 +138,8 @@ export class Importer {
             .join(", "),
           value.milestone?.title,
           value.milestone?.state,
+          storyPoints,
           value.milestone?.due_on,
-          value.milestone?.html_url,
         ]);
       }
       issueSheetsData.forEach((value) => {
@@ -161,8 +167,8 @@ export class Importer {
               "Assignees",
               "Milestone",
               "Status",
+              "Story Points",
               "Deadline",
-              "URI",
             ],
           ],
         },

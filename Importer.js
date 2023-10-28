@@ -69,7 +69,7 @@ class Importer {
             Core.startGroup(`🔨 Form Issues data for Sheets format...`);
             var issueSheetsData = [];
             for (const value of issuesData) {
-                Core.info(`Processing ${JSON.stringify(value)}...`);
+                Core.info(`Processing ${JSON.stringify(value.title)}...`);
                 var labels = [];
                 for (const label of value.labels) {
                     labels.push(label.name);
@@ -84,7 +84,7 @@ class Importer {
                 id
                 projectItems(first: 10){
                   nodes{
-                    fieldValueByName(name:"Story Point"){
+                    fieldValueByName(name:"Story Points"){
                       ...on ProjectV2ItemFieldNumberValue{
                         number
                       }
@@ -97,13 +97,16 @@ class Importer {
         `, {
                     id: value.node_id,
                 });
-                Core.info(`Response: ${JSON.stringify(response)}`);
-                // const storyPoints =
-                //   response.node.projectItems.nodes[0]?.fieldValueByName.number;
+                const storyPoints = (_a = response.node.projectItems.nodes[0]) === null || _a === void 0 ? void 0 : _a.fieldValueByName.number;
+                // ignore if a pull request
+                if (value.pull_request) {
+                    Core.info(`Ignoring ${JSON.stringify(value.title)} as it is a pull request...`);
+                    continue;
+                }
                 issueSheetsData.push([
                     value.number,
                     value.state,
-                    value.pull_request ? "Pull Request" : "Issue",
+                    "Issue",
                     value.title,
                     value.html_url,
                     Object.keys(labels)
@@ -112,10 +115,10 @@ class Importer {
                     Object.keys(assignees)
                         .map((k) => assignees[k])
                         .join(", "),
-                    (_a = value.milestone) === null || _a === void 0 ? void 0 : _a.title,
-                    (_b = value.milestone) === null || _b === void 0 ? void 0 : _b.state,
-                    (_c = value.milestone) === null || _c === void 0 ? void 0 : _c.due_on,
-                    (_d = value.milestone) === null || _d === void 0 ? void 0 : _d.html_url,
+                    (_b = value.milestone) === null || _b === void 0 ? void 0 : _b.title,
+                    (_c = value.milestone) === null || _c === void 0 ? void 0 : _c.state,
+                    storyPoints,
+                    (_d = value.milestone) === null || _d === void 0 ? void 0 : _d.due_on,
                 ]);
             }
             issueSheetsData.forEach((value) => {
@@ -142,8 +145,8 @@ class Importer {
                             "Assignees",
                             "Milestone",
                             "Status",
+                            "Story Points",
                             "Deadline",
-                            "URI",
                         ],
                     ],
                 },
