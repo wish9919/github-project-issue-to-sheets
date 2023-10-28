@@ -1,4 +1,4 @@
-name: 'Transfer GitHub Project Issues into Google Sheets'
+name: 'Import GitHub Project Issues into Google Sheets'
 description: 'Do you want to import your Issues info into Google Sheets?'
 branding:
   icon: 'bar-chart-2'  
