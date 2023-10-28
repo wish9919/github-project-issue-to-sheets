@@ -69,6 +69,7 @@ class Importer {
             Core.startGroup(`🔨 Form Issues data for Sheets format...`);
             var issueSheetsData = [];
             for (const value of issuesData) {
+                Core.info(`Processing ${value}...`);
                 var labels = [];
                 for (const label of value.labels) {
                     labels.push(label.name);
@@ -77,10 +78,26 @@ class Importer {
                 for (const assignee of value.assignees) {
                     assignees.push(assignee.login);
                 }
-                const columns = await octokit.projects.listColumns({
-                    project_id: 3,
-                });
-                Core.info(`Columns: ${JSON.stringify(columns)}`);
+                // const response = await octokit.graphql(`
+                // query getStoryPointsByIssueId($id: ID!){
+                //     node(id: $id) {
+                //       ... on Issue {
+                //         id
+                //         projectItems(first: 10){
+                //           nodes{
+                //             fieldValueByName(name:"Story Point"){
+                //               ...on ProjectV2ItemFieldNumberValue{
+                //                 number
+                //               }
+                //             }
+                //           }
+                //         }
+                //       }
+                //     }
+                //   }
+                // `, {
+                //   id: ""
+                // });
                 issueSheetsData.push([
                     value.number,
                     value.state,
