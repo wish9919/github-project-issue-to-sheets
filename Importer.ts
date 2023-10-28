@@ -15,8 +15,6 @@ export class Importer {
     public static INPUT_SHEET_NAME = "sheet-name"
 
     public async start(): Promise<void> {
-        const auth = createActionAuth()
-        const authentication = await auth()
         try {
             Core.startGroup("🚦 Checking Inputs and Initializing...")
             const serviceAccountCredentials = Core.getInput(Importer.INPUT_SERVICE_ACCOUNT_JSON)
@@ -28,7 +26,7 @@ export class Importer {
             Core.info("Auth with GitHub Token...")
             
             const octokit = new Octokit({
-                auth: authentication
+                authStrategy: createActionAuth
             })
             Core.info("Done.")
             Core.endGroup()
