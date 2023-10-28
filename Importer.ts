@@ -38,7 +38,7 @@ export class Importer {
       var issuesData = [];
       var issuesPage;
       do {
-        Core.info(`Getting data from Issues page ${page}...`);
+        Core.info(`Fetch data from Issues page ${page}...`);
         issuesPage = await octokit.issues.listForRepo({
           owner: GitHub.context.repo.owner,
           repo: GitHub.context.repo.repo,
