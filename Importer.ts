@@ -2,6 +2,9 @@ import * as Core from "@actions/core";
 import { Octokit } from "@octokit/rest";
 import * as GitHub from "@actions/github";
 import { google } from "googleapis"
+import { createActionAuth } from "@octokit/auth-action"
+
+
 
 export class Importer {
 
@@ -12,8 +15,9 @@ export class Importer {
     public static INPUT_SHEET_NAME = "sheet-name"
 
     public async start(): Promise<void> {
+        const auth = createActionAuth()
+        const authentication = await auth()
         try {
-
             Core.startGroup("🚦 Checking Inputs and Initializing...")
             const serviceAccountCredentials = Core.getInput(Importer.INPUT_SERVICE_ACCOUNT_JSON)
             const documentId = Core.getInput(Importer.INPUT_DOCUMENT_ID)
@@ -22,7 +26,10 @@ export class Importer {
                 throw new Error("🚨 Some Inputs missed. Please check project README.")
             }
             Core.info("Auth with GitHub Token...")
-            const octokit = new Octokit()
+            
+            const octokit = new Octokit({
+                auth: authentication
+            })
             Core.info("Done.")
             Core.endGroup()
 
