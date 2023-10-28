@@ -97,7 +97,13 @@ export class Importer {
                 id
                 projectItems(first: 10){
                   nodes{
-                    fieldValueByName(name:"Story Points"){
+                    status:fieldValueByName(name:"Status"){
+                      ...on ProjectV2ItemFieldSingleSelectValue{
+                        color
+                        name
+                      }
+                    }
+                    storyPoints:fieldValueByName(name:"Story Points"){
                       ...on ProjectV2ItemFieldNumberValue{
                         number
                       }
@@ -113,9 +119,12 @@ export class Importer {
           }
         );
 
+        Core.info(`Response: ${JSON.stringify(response)}`);
+
+        const status =
+          response.node.projectItems?.nodes?.[0]?.status?.name || "N/A";
         const storyPoints =
-          response.node.projectItems?.nodes?.[0]?.fieldValueByName?.number ||
-          "N/A";
+          response.node.projectItems?.nodes?.[0]?.storyPoints?.number || "N/A";
 
         // ignore if a pull request
         if (value.pull_request) {
@@ -138,7 +147,7 @@ export class Importer {
             .map((k) => assignees[k])
             .join(", "),
           value.milestone?.title,
-          value.milestone?.state,
+          status,
           storyPoints,
           value.milestone?.due_on,
         ]);
@@ -160,14 +169,14 @@ export class Importer {
           values: [
             [
               "#",
-              "Status",
+              "Issue Status",
               "Type",
               "Title",
               "URI",
               "Labels",
               "Assignees",
               "Milestone",
-              "Status",
+              "Task Status",
               "Story Points",
               "Deadline",
             ],

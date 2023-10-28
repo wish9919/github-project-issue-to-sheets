@@ -8,7 +8,7 @@ const googleapis_1 = require("googleapis");
 const auth_action_1 = require("@octokit/auth-action");
 class Importer {
     async start() {
-        var _a, _b, _c, _d, _e, _f, _g;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
         try {
             Core.startGroup("🚦 Checking Inputs and Initializing...");
             const serviceAccountCredentials = Core.getInput(Importer.INPUT_SERVICE_ACCOUNT_JSON);
@@ -84,7 +84,13 @@ class Importer {
                 id
                 projectItems(first: 10){
                   nodes{
-                    fieldValueByName(name:"Story Points"){
+                    status:fieldValueByName(name:"Status"){
+                      ...on ProjectV2ItemFieldSingleSelectValue{
+                        color
+                        name
+                      }
+                    }
+                    storyPoints:fieldValueByName(name:"Story Points"){
                       ...on ProjectV2ItemFieldNumberValue{
                         number
                       }
@@ -97,8 +103,9 @@ class Importer {
         `, {
                     id: value.node_id,
                 });
-                const storyPoints = ((_d = (_c = (_b = (_a = response.node.projectItems) === null || _a === void 0 ? void 0 : _a.nodes) === null || _b === void 0 ? void 0 : _b[0]) === null || _c === void 0 ? void 0 : _c.fieldValueByName) === null || _d === void 0 ? void 0 : _d.number) ||
-                    "N/A";
+                Core.info(`Response: ${JSON.stringify(response)}`);
+                const status = ((_d = (_c = (_b = (_a = response.node.projectItems) === null || _a === void 0 ? void 0 : _a.nodes) === null || _b === void 0 ? void 0 : _b[0]) === null || _c === void 0 ? void 0 : _c.status) === null || _d === void 0 ? void 0 : _d.name) || "N/A";
+                const storyPoints = ((_h = (_g = (_f = (_e = response.node.projectItems) === null || _e === void 0 ? void 0 : _e.nodes) === null || _f === void 0 ? void 0 : _f[0]) === null || _g === void 0 ? void 0 : _g.storyPoints) === null || _h === void 0 ? void 0 : _h.number) || "N/A";
                 // ignore if a pull request
                 if (value.pull_request) {
                     Core.info(`Ignoring ${JSON.stringify(value.title)} as it is a pull request...`);
@@ -116,10 +123,10 @@ class Importer {
                     Object.keys(assignees)
                         .map((k) => assignees[k])
                         .join(", "),
-                    (_e = value.milestone) === null || _e === void 0 ? void 0 : _e.title,
-                    (_f = value.milestone) === null || _f === void 0 ? void 0 : _f.state,
+                    (_j = value.milestone) === null || _j === void 0 ? void 0 : _j.title,
+                    status,
                     storyPoints,
-                    (_g = value.milestone) === null || _g === void 0 ? void 0 : _g.due_on,
+                    (_k = value.milestone) === null || _k === void 0 ? void 0 : _k.due_on,
                 ]);
             }
             issueSheetsData.forEach((value) => {
@@ -138,14 +145,14 @@ class Importer {
                     values: [
                         [
                             "#",
-                            "Status",
+                            "Issue Status",
                             "Type",
                             "Title",
                             "URI",
                             "Labels",
                             "Assignees",
                             "Milestone",
-                            "Status",
+                            "Task Status",
                             "Story Points",
                             "Deadline",
                         ],
