@@ -113,6 +113,8 @@ export class Importer {
           }
         );
 
+        Core.info(`Response: ${JSON.stringify(response)}`);
+
         // const storyPoints =
         //   response.node.projectItems.nodes[0]?.fieldValueByName.number;
 

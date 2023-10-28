@@ -97,6 +97,7 @@ class Importer {
         `, {
                     id: value.node_id,
                 });
+                Core.info(`Response: ${JSON.stringify(response)}`);
                 // const storyPoints =
                 //   response.node.projectItems.nodes[0]?.fieldValueByName.number;
                 issueSheetsData.push([
