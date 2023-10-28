@@ -5,6 +5,7 @@ const Core = require("@actions/core");
 const rest_1 = require("@octokit/rest");
 const GitHub = require("@actions/github");
 const googleapis_1 = require("googleapis");
+const auth_action_1 = require("@octokit/auth-action");
 class Importer {
     async start() {
         var _a, _b, _c, _d;
@@ -17,7 +18,9 @@ class Importer {
                 throw new Error("🚨 Some Inputs missed. Please check project README.");
             }
             Core.info("Auth with GitHub Token...");
-            const octokit = new rest_1.Octokit();
+            const octokit = new rest_1.Octokit({
+                authStrategy: auth_action_1.createActionAuth,
+            });
             Core.info("Done.");
             Core.endGroup();
             Core.startGroup("📑 Getting all Issues in repository...");
@@ -30,7 +33,7 @@ class Importer {
                     owner: GitHub.context.repo.owner,
                     repo: GitHub.context.repo.repo,
                     state: "all",
-                    page
+                    page,
                 });
                 Core.info(`There are ${issuesPage.data.length} Issues...`);
                 issuesData = issuesData.concat(issuesPage.data);
@@ -40,19 +43,19 @@ class Importer {
                 page++;
             } while (issuesPage.data.length);
             Core.info("All pages processed:");
-            issuesData.forEach(value => {
+            issuesData.forEach((value) => {
                 Core.info(`${Importer.LOG_BULLET_ITEM} ${value.title}`);
             });
             Core.endGroup();
             Core.startGroup("🔓 Authenticating via Google API Service Account...");
             const auth = new googleapis_1.google.auth.GoogleAuth({
                 // Scopes can be specified either as an array or as a single, space-delimited string.
-                scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-                credentials: JSON.parse(serviceAccountCredentials)
+                scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+                credentials: JSON.parse(serviceAccountCredentials),
             });
             const sheets = googleapis_1.google.sheets({
                 version: "v4",
-                auth: auth
+                auth: auth,
             });
             Core.info("Done.");
             Core.endGroup();
@@ -80,15 +83,19 @@ class Importer {
                     value.pull_request ? "Pull Request" : "Issue",
                     value.title,
                     value.html_url,
-                    Object.keys(labels).map(k => labels[k]).join(", "),
-                    Object.keys(assignees).map(k => assignees[k]).join(", "),
+                    Object.keys(labels)
+                        .map((k) => labels[k])
+                        .join(", "),
+                    Object.keys(assignees)
+                        .map((k) => assignees[k])
+                        .join(", "),
                     (_a = value.milestone) === null || _a === void 0 ? void 0 : _a.title,
                     (_b = value.milestone) === null || _b === void 0 ? void 0 : _b.state,
                     (_c = value.milestone) === null || _c === void 0 ? void 0 : _c.due_on,
                     (_d = value.milestone) === null || _d === void 0 ? void 0 : _d.html_url,
                 ]);
             }
-            issueSheetsData.forEach(value => {
+            issueSheetsData.forEach((value) => {
                 Core.info(`${Importer.LOG_BULLET_ITEM} ${JSON.stringify(value)}`);
             });
             Core.endGroup();
@@ -102,9 +109,21 @@ class Importer {
                     majorDimension: "ROWS",
                     range: sheetName + "!A1:1",
                     values: [
-                        ["#", "Status", "Type", "Title", "URI", "Labels", "Assignees", "Milestone", "Status", "Deadline", "URI"]
-                    ]
-                }
+                        [
+                            "#",
+                            "Status",
+                            "Type",
+                            "Title",
+                            "URI",
+                            "Labels",
+                            "Assignees",
+                            "Milestone",
+                            "Status",
+                            "Deadline",
+                            "URI",
+                        ],
+                    ],
+                },
             });
             Core.info("Appending data...");
             await sheets.spreadsheets.values.append({
@@ -114,8 +133,8 @@ class Importer {
                 requestBody: {
                     majorDimension: "ROWS",
                     range: sheetName + "!A1:1",
-                    values: issueSheetsData
-                }
+                    values: issueSheetsData,
+                },
             });
             Core.info("Done.");
             Core.endGroup();

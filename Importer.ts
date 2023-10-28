@@ -13,8 +13,6 @@ export class Importer {
   public static INPUT_SHEET_NAME = "sheet-name";
 
   public async start(): Promise<void> {
-    const auth = createActionAuth();
-    const authentication = await auth();
     try {
       Core.startGroup("🚦 Checking Inputs and Initializing...");
       const serviceAccountCredentials = Core.getInput(
@@ -28,17 +26,17 @@ export class Importer {
       Core.info("Auth with GitHub Token...");
 
       const octokit = new Octokit({
-        auth: authentication.token,
+        authStrategy: createActionAuth,
       });
       Core.info("Done.");
       Core.endGroup();
 
-      Core.startGroup("📑 Fetching all Issues in repository...");
+      Core.startGroup("📑 Getting all Issues in repository...");
       var page = 1;
       var issuesData = [];
       var issuesPage;
       do {
-        Core.info(`Fetching data from Issues page ${page}...`);
+        Core.info(`Getting data from Issues page ${page}...`);
         issuesPage = await octokit.issues.listForRepo({
           owner: GitHub.context.repo.owner,
           repo: GitHub.context.repo.repo,
@@ -154,7 +152,6 @@ export class Importer {
       Core.endGroup();
       Core.info("☑️ Done!");
     } catch (error) {
-      Core.error(error);
       Core.setFailed(error);
     }
   }

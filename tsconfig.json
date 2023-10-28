@@ -8,9 +8,10 @@
       "es2020.string",
       "es2020.symbol.wellknown"
     ],
-    "sourceMap": true
+    "sourceMap": true,
+    "skipLibCheck": true,
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
   ]
 }
