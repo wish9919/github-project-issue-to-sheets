@@ -78,26 +78,27 @@ class Importer {
                 for (const assignee of value.assignees) {
                     assignees.push(assignee.login);
                 }
-                // const response = await octokit.graphql(`
-                // query getStoryPointsByIssueId($id: ID!){
-                //     node(id: $id) {
-                //       ... on Issue {
-                //         id
-                //         projectItems(first: 10){
-                //           nodes{
-                //             fieldValueByName(name:"Story Point"){
-                //               ...on ProjectV2ItemFieldNumberValue{
-                //                 number
-                //               }
-                //             }
-                //           }
-                //         }
-                //       }
-                //     }
-                //   }
-                // `, {
-                //   id: ""
-                // });
+                const response = await octokit.graphql(` query getStoryPointsByIssueId($id: ID!){
+            node(id: $id) {
+              ... on Issue {
+                id
+                projectItems(first: 10){
+                  nodes{
+                    fieldValueByName(name:"Story Point"){
+                      ...on ProjectV2ItemFieldNumberValue{
+                        number
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        `, {
+                    id: value.node_id,
+                });
+                // const storyPoints =
+                //   response.node.projectItems.nodes[0]?.fieldValueByName.number;
                 issueSheetsData.push([
                     value.number,
                     value.state,
