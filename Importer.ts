@@ -154,6 +154,7 @@ export class Importer {
       Core.endGroup();
       Core.info("☑️ Done!");
     } catch (error) {
+      Core.error(error);
       Core.setFailed(error);
     }
   }
