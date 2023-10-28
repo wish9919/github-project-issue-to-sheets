@@ -2,7 +2,7 @@
   "name": "github-project-issue-to-sheets",
   "version": "2.0.0",
   "description": "Wanna import your Issues info to Google Sheets?",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc -b",
@@ -24,7 +24,7 @@
     "@octokit/auth-action": "^4.0.1",
     "@octokit/rest": "^18.0.3",
     "@octokit/types": "^5.2.0",
-    "@zeit/ncc": "^0.22.3",
+    "@vercel/ncc": "^0.38.1",
     "googleapis": "^60.0.1",
     "typescript": "^4.9.5"
   }
