@@ -2,7 +2,7 @@
   "name": "github-project-issue-to-sheets",
   "version": "2.0.0",
   "description": "Wanna import your Issues info to Google Sheets?",
-  "main": "dist/index.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc -b",
