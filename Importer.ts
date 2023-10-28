@@ -132,7 +132,6 @@ export class Importer {
               "Assignees",
               "Milestone",
               "Status",
-              "Story Points",
               "Deadline",
               "URI",
             ],
