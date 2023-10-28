@@ -2,7 +2,7 @@ import * as Core from "@actions/core";
 import { Octokit } from "@octokit/rest";
 import * as GitHub from "@actions/github";
 import { google } from "googleapis"
-import { createActionAuth } from "@octokit/auth-action"
+// import { createActionAuth } from "@octokit/auth-action"
 
 
 
@@ -25,9 +25,7 @@ export class Importer {
             }
             Core.info("Auth with GitHub Token...")
             
-            const octokit = new Octokit({
-                authStrategy: createActionAuth
-            })
+            const octokit = new Octokit()
             Core.info("Done.")
             Core.endGroup()
 
