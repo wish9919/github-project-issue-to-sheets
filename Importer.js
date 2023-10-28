@@ -77,6 +77,10 @@ class Importer {
                 for (const assignee of value.assignees) {
                     assignees.push(assignee.login);
                 }
+                const columns = await octokit.projects.listColumns({
+                    project_id: 3,
+                });
+                Core.info(`Columns: ${JSON.stringify(columns)}`);
                 issueSheetsData.push([
                     value.number,
                     value.state,
