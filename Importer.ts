@@ -122,9 +122,9 @@ export class Importer {
         Core.info(`Response: ${JSON.stringify(response)}`);
 
         const status =
-          response.node.projectItems?.nodes?.[0]?.status?.name || "N/A";
+          response.node.projectItems?.nodes?.[0]?.status?.name || "";
         const storyPoints =
-          response.node.projectItems?.nodes?.[0]?.storyPoints?.number || "N/A";
+          response.node.projectItems?.nodes?.[0]?.storyPoints?.number || "";
 
         // ignore if a pull request
         if (value.pull_request) {

@@ -104,8 +104,8 @@ class Importer {
                     id: value.node_id,
                 });
                 Core.info(`Response: ${JSON.stringify(response)}`);
-                const status = ((_d = (_c = (_b = (_a = response.node.projectItems) === null || _a === void 0 ? void 0 : _a.nodes) === null || _b === void 0 ? void 0 : _b[0]) === null || _c === void 0 ? void 0 : _c.status) === null || _d === void 0 ? void 0 : _d.name) || "N/A";
-                const storyPoints = ((_h = (_g = (_f = (_e = response.node.projectItems) === null || _e === void 0 ? void 0 : _e.nodes) === null || _f === void 0 ? void 0 : _f[0]) === null || _g === void 0 ? void 0 : _g.storyPoints) === null || _h === void 0 ? void 0 : _h.number) || "N/A";
+                const status = ((_d = (_c = (_b = (_a = response.node.projectItems) === null || _a === void 0 ? void 0 : _a.nodes) === null || _b === void 0 ? void 0 : _b[0]) === null || _c === void 0 ? void 0 : _c.status) === null || _d === void 0 ? void 0 : _d.name) || "";
+                const storyPoints = ((_h = (_g = (_f = (_e = response.node.projectItems) === null || _e === void 0 ? void 0 : _e.nodes) === null || _f === void 0 ? void 0 : _f[0]) === null || _g === void 0 ? void 0 : _g.storyPoints) === null || _h === void 0 ? void 0 : _h.number) || "";
                 // ignore if a pull request
                 if (value.pull_request) {
                     Core.info(`Ignoring ${JSON.stringify(value.title)} as it is a pull request...`);
